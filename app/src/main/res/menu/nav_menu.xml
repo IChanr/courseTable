@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:icon="@drawable/ic_grade_list"
+            android:id="@+id/nav_menu_cjcx"
+            android:title="成绩查询"/>
+        <item
+            android:icon="@drawable/ic_search"
+            android:id="@+id/nav_menu_tsgc"
+            android:title="图书馆藏"/>
+        <item
+            android:icon="@drawable/ic_settings"
+            android:id="@+id/nav_menu_setting"
+            android:title="设置"/>
+    </group>
+</menu>
