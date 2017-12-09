@@ -89,6 +89,7 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
     }
 
     private void initView() {
+        Log.d(TAG, "initView: 12-9");
         mySql = new MySql(ui_Main.this, "table.db", null, 1);
         db = mySql.getWritableDatabase();
         readSql();
