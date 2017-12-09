@@ -77,6 +77,7 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
             actionBar.setHomeAsUpIndicator(R.mipmap.ic_menu);
+            Log.d(TAG, "onCreate: ");
         }
         new Thread(new Runnable() {
             @Override
