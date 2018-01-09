@@ -2,6 +2,7 @@ package com.coursetable.android;
 
 import android.app.Dialog;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -67,7 +68,7 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
     private MySql mySql;
     private SQLiteDatabase db;
     private Dialog dialog;
-
+    private api mApi=new api();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -111,7 +112,9 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.nav_menu_cjcx:
-                        Toast.makeText(ui_Main.this, "成绩查询开发中", Toast.LENGTH_SHORT).show();
+                        Intent intent=new Intent(ui_Main.this,ScoreActivity.class);
+                        startActivity(intent);
+                        //Toast.makeText(ui_Main.this, "成绩查询开发中", Toast.LENGTH_SHORT).show();
                         drawerLayout.closeDrawers();
                         break;
                     case R.id.nav_menu_setting:
@@ -184,7 +187,6 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
 
         dialog.show();
         Window dialogWindow = dialog.getWindow();
-//        dialogWindow.setBackgroundDrawableResource(android.R.color.transparent);
         dialogWindow.setGravity(Gravity.BOTTOM);
         WindowManager.LayoutParams lp = dialogWindow.getAttributes();
         lp.width = WindowManager.LayoutParams.MATCH_PARENT;
@@ -231,6 +233,7 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
         new Thread(new Runnable() {
             @Override
             public void run() {
+
                 db.delete("tableInfo", null, null);
                 map.clear();
                 RequestBody requestBody = new FormBody.Builder().add("__VIEWSTATE",
@@ -245,6 +248,13 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
 
                     Response response = client.newCall(request).execute();
                     if (response.code() == 302) {
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.dismiss();
+                                mApi.showProgress(ui_Main.this);
+                            }
+                        });
                         String tempIP = "http://222.205.193.20" + response.header("Location");
                         Log.d(TAG, "run: " + tempIP);
 
@@ -290,11 +300,22 @@ public class ui_Main extends AppCompatActivity implements View.OnClickListener {
                                 dialog.dismiss();
                                 myadapter = new Myadapter(map, ui_Main.this);
                                 gridView.setAdapter(myadapter);
+                                mApi.dissmissProgress();
                                 Toast.makeText(ui_Main.this, "数据更新完成!", Toast.LENGTH_SHORT).show();
                             }
                         });
                     }else {
-                        Log.d(TAG, "run: 登陆错误提示"+response.body().string());
+                        mApi.dissmissProgress();
+                        //Log.d(TAG, "run: 登陆错误提示"+response.body().string());
+                        Document document=Jsoup.parse(response.body().string());
+                        Elements elements = document.select("form[id=form1]").select("script");
+                        final String tx = elements.html();
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Toast.makeText(ui_Main.this,tx,Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 } catch (IOException e) {
                     e.printStackTrace();

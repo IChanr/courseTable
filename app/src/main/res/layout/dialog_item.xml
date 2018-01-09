@@ -12,7 +12,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
         <EditText
-            android:text=""
+            android:text="1606117035"
             android:id="@+id/et_dialog_username"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />

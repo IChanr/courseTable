@@ -1,6 +1,12 @@
 package com.coursetable.android;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.Context;
 import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.Button;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -27,6 +33,7 @@ public class api {
     private OkHttpClient client;
     private String Cookie = "";
     private String __VIEWSTATE;
+    private Dialog dialog;
 
     public void init() {
         client = new OkHttpClient();
@@ -58,8 +65,31 @@ public class api {
                         ("Button1", "").build();
                 Request request = new Request.Builder().url(IP).addHeader("Cookie", Cookie)
                         .addHeader("HOST", HOST).addHeader("Referer", IP).post(requestBody).build();
-
+ 
             }
         }).start();
+    }
+
+    public void showProgress(Context context) {
+        dialog = new Dialog(context);
+        View view = LayoutInflater.from(context).inflate(R.layout.progress_layout, null);
+
+        Button btn = view.findViewById(R.id.btn_cancel);
+        btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dialog.dismiss();
+            }
+        });
+        //dialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+        dialog.setCancelable(false);
+        dialog.setContentView(view);
+        dialog.show();
+    }
+
+    public void dissmissProgress() {
+        if (dialog != null) {
+            dialog.dismiss();
+        }
     }
 }
